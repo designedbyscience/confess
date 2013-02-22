@@ -267,6 +267,8 @@ var confess = {
             });
 
             // URLs in stylesheets
+			// At the moment, this does not find fonts
+			
             stylesheets = document.styleSheets;
             for (ss = 0, stylesheetsLength = stylesheets.length; ss < stylesheetsLength; ss++) {
                 rules = stylesheets[ss].rules;
@@ -275,7 +277,18 @@ var confess = {
                     if (!rules[r]['style']) { continue; }
                     style = rules[r].style;
                     for (s = 0, styleLength = style.length; s < styleLength; s++) {
+				
                         value = style.getPropertyCSSValue(style[s]);
+						//Checking for fonts
+						if(value && rules[r].type == 5){
+							console.log(value[0]);
+							for (var f=0, flength = value.length; f < flength; f++) {
+								if(value[f].cssValueType === 3){
+									tallyResource(value[f].cssText.split(" ")[0].slice(4, -1));
+								}
+
+							};
+						}
                         if (value && value.primitiveType == CSSPrimitiveValue.CSS_URI) {
                             tallyResource(value.getStringValue());
                         }
